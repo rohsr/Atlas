@@ -2,9 +2,11 @@ export const theme = {
   colors: {
     primary: '#111111',
     brand: '#2563EB',
-    success: '#16A34A',
+    accent: '#2563EB',
+    success: '#22C55E',
+    warning: '#F59E0B',
     danger: '#EF4444',
-    surface: '#FAFAFB',
+    surface: '#FAFAFA',
     card: '#FFFFFF',
     border: '#ECECEC',
     slate: '#6B7280',
@@ -24,13 +26,22 @@ export const theme = {
     caption: 12,
   },
   borderRadius: {
-    sm: 8,
+    xs: 8,
+    sm: 12,
     md: 16,
+    card: 22,
+    button: 20,
     lg: 24,
     xl: 32,
   },
+  spacing: {
+    margin: 24,
+    gap: 16,
+    cardPadding: 16,
+  },
   shadows: {
     soft: '0px 16px 40px rgba(17, 17, 17, 0.08)',
+    card: '0px 2px 8px rgba(0, 0, 0, 0.06)',
     panel: '0px 8px 24px rgba(17, 17, 17, 0.08)',
   },
 };

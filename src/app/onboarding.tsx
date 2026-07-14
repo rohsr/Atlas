@@ -7,38 +7,51 @@ const logoImage = require('../../assets/images/logo.png');
 
 export default function Onboarding() {
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <View className="flex-1 bg-primary">
       <ImageBackground source={backgroundImage} className="flex-1" resizeMode="cover">
-        <View className="flex-1 px-6 py-8">
-          <View className="items-center justify-center flex-1 pt-12">
-            <Image source={logoImage} className="h-60 w-60" resizeMode="contain" />
+        {/* Dark overlay for rich visual contrast and premium feel */}
+        <View className="absolute inset-0 bg-black/40" />
 
-            <Text className="mt-16 text-center text-3xl font-semibold text-black leading-[42px]">
+        <SafeAreaView className="flex-1 justify-between px-6 py-8">
+          {/* Logo Section */}
+          <View className="items-center justify-center flex-1 pt-8">
+            <Image 
+              source={logoImage} 
+              className="h-44 w-44" 
+              resizeMode="contain" 
+            />
+          </View>
+
+          {/* Content & Action Section */}
+          <View className="pb-8">
+            <Text className="text-center text-white font-display text-heading1 leading-[44px]">
               Everything you need for every journey.
             </Text>
-            <Text className="mt-4 text-center text-base text-slate max-w-[320px]">
+            
+            <Text className="mt-3 text-center text-white/80 font-sans text-body1 max-w-[300px] self-center">
               Plan better. Travel smarter.
             </Text>
-          </View>
 
-          <View className="pb-6">
-            <Link href="/auth/sign-up" asChild>
-              <Pressable className="h-14 items-center justify-center rounded-[24px] bg-black">
-                <Text className="text-base font-semibold text-white">Get Started</Text>
-              </Pressable>
-            </Link>
-
-            <View className="mt-5 flex-row items-center justify-center gap-1">
-              <Text className="text-sm text-slate">Already have an account?</Text>
-              <Link href="/auth/sign-in" asChild>
-                <Pressable>
-                  <Text className="text-sm font-semibold text-black underline">Log in</Text>
+            <View className="mt-8">
+              <Link href="/auth/sign-up" asChild>
+                <Pressable className="h-14 items-center justify-center rounded-lg bg-white shadow-soft active:opacity-90">
+                  <Text className="text-base font-semibold text-primary">Get Started</Text>
                 </Pressable>
               </Link>
+
+              <View className="mt-5 flex-row items-center justify-center gap-1">
+                <Text className="text-sm text-white/60 font-sans">Already have an account?</Text>
+                <Link href="/auth/sign-in" asChild>
+                  <Pressable className="active:opacity-80">
+                    <Text className="text-sm font-semibold text-white underline">Log in</Text>
+                  </Pressable>
+                </Link>
+              </View>
             </View>
           </View>
-        </View>
+        </SafeAreaView>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 }
+

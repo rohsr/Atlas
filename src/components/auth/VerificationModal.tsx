@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Modal, Pressable, TextInput as RNTextInput, ScrollView, Text, View } from 'react-native';
+import { Icon } from '../Icon';
 
 interface VerificationModalProps {
   visible: boolean;
@@ -24,10 +25,12 @@ export function VerificationModal({
 
   useEffect(() => {
     if (!visible) {
-      setCode(['', '', '', '', '', '']);
-      setTimeLeft(45);
-      setCanResend(false);
-      return;
+      const timeoutId = setTimeout(() => {
+        setCode(['', '', '', '', '', '']);
+        setTimeLeft(45);
+        setCanResend(false);
+      }, 0);
+      return () => clearTimeout(timeoutId);
     }
 
     const timer = setInterval(() => {
@@ -85,14 +88,14 @@ export function VerificationModal({
             accessibilityRole="button"
             accessibilityLabel="Close"
           >
-            <Text className="text-2xl">←</Text>
+            <Icon name="Back" size={24} />
           </Pressable>
 
           {/* Content */}
           <View className="flex-1 justify-center">
             <Text className="text-2xl font-semibold text-black">Verify your email</Text>
             <Text className="mt-2 text-base text-slate">
-              We've sent a 6-digit code to {'\n'}
+              We&apos;ve sent a 6-digit code to {'\n'}
               <Text className="font-semibold text-black">{email}</Text>
             </Text>
 

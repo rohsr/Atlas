@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { AuthTextInput, VerificationModal } from '../../components/auth';
+import { Icon } from '../../components/Icon';
 
 // Validation schema
 const signUpSchema = z
@@ -35,7 +36,6 @@ export default function SignUpScreen() {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -46,8 +46,6 @@ export default function SignUpScreen() {
       agreeToTerms: false,
     },
   });
-
-  const email = watch('email');
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
@@ -70,7 +68,7 @@ export default function SignUpScreen() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       // Navigate to home on success
       setVerificationVisible(false);
-      router.replace('/');
+      router.replace('/onboarding-flow/complete-profile');
     } catch (error) {
       console.error('Verification error:', error);
     } finally {
@@ -102,13 +100,13 @@ export default function SignUpScreen() {
             accessibilityRole="button"
             accessibilityLabel="Go back"
           >
-            <Text className="text-2xl">←</Text>
+            <Icon name="Back" size={24} />
           </Pressable>
 
           {/* Header */}
           <View className="mt-8 mb-8">
             <Text className="text-3xl font-semibold text-black">Create your account</Text>
-            <Text className="mt-2 text-base text-slate">Let's get you started.</Text>
+            <Text className="mt-2 text-base text-slate">Let&apos;s get you started.</Text>
           </View>
 
           {/* Form */}
@@ -195,7 +193,7 @@ export default function SignUpScreen() {
                 }`}
               >
                 {agreeToTerms && (
-                  <Text className="text-white text-sm">✓</Text>
+                  <Icon name="Check" size={14} color="white" strokeWidth={3} />
                 )}
               </View>
               <Text className="flex-1 text-sm text-slate">

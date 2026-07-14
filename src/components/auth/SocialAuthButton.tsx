@@ -1,4 +1,5 @@
 import { Pressable, Text } from 'react-native';
+import { Icon } from '../Icon';
 
 interface SocialAuthButtonProps {
   onPress: () => void;
@@ -11,9 +12,9 @@ export function SocialAuthButton({ onPress, provider }: SocialAuthButtonProps) {
       case 'google':
         return <Text className="text-xl font-bold">G</Text>;
       case 'apple':
-        return <Text className="text-xl">🍎</Text>;
+        return <Icon name="Apple" size="medium" />;
       case 'email':
-        return <Text className="text-xl">✉</Text>;
+        return <Icon name="Mail" size="medium" />;
     }
   };
 

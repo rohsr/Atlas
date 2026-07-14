@@ -7,9 +7,11 @@ module.exports = {
       colors: {
         primary: '#111111',
         atlas: '#2563EB',
-        success: '#16A34A',
+        accent: '#2563EB',
+        success: '#22C55E',
+        warning: '#F59E0B',
         danger: '#EF4444',
-        surface: '#FAFAFB',
+        surface: '#FAFAFA',
         card: '#FFFFFF',
         border: '#ECECEC',
         slate: '#6B7280',
@@ -17,7 +19,9 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Inter-Regular', 'system-ui', 'sans-serif'],
+        medium: ['Inter-Medium', 'system-ui', 'sans-serif'],
         display: ['Inter-SemiBold', 'system-ui', 'sans-serif'],
+        bold: ['Inter-Bold', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         display: ['48px', { lineHeight: '56px', fontWeight: '700' }],
@@ -32,11 +36,14 @@ module.exports = {
         xs: '8px',
         sm: '12px',
         md: '16px',
+        card: '22px',
+        button: '20px',
         lg: '24px',
         xl: '32px',
       },
       boxShadow: {
         soft: '0px 16px 40px rgba(17, 17, 17, 0.08)',
+        card: '0px 2px 8px rgba(0, 0, 0, 0.06)',
         panel: '0px 8px 24px rgba(17, 17, 17, 0.08)',
       },
       spacing: {

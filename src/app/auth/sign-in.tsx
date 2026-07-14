@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { AuthTextInput, SocialAuthButton, VerificationModal } from '../../components/auth';
+import { Icon } from '../../components/Icon';
 
 // Validation schema
 const signInSchema = z.object({
@@ -71,7 +72,7 @@ export default function SignInScreen() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       // Navigate to home on success
       setVerificationVisible(false);
-      router.replace('/');
+      router.replace('/(tabs)');
     } catch (error) {
       console.error('Verification error:', error);
     } finally {
@@ -103,7 +104,7 @@ export default function SignInScreen() {
             accessibilityRole="button"
             accessibilityLabel="Go back"
           >
-            <Text className="text-2xl">←</Text>
+            <Icon name="Back" size={24} />
           </Pressable>
 
           {/* Header */}
@@ -215,7 +216,7 @@ export default function SignInScreen() {
 
           {/* Sign Up Link */}
           <View className="mt-8 flex-row items-center justify-center gap-1">
-            <Text className="text-sm text-slate">Don't have an account?</Text>
+            <Text className="text-sm text-slate">Don&apos;t have an account?</Text>
             <Pressable
               onPress={() => router.push('/auth/sign-up')}
               accessibilityRole="button"

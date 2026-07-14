@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Pressable, TextInput as RNTextInput, Text, View } from 'react-native';
+import { theme } from '../../theme';
+import { Icon } from '../Icon';
 
 interface AuthTextInputProps {
   label: string;
@@ -56,7 +58,11 @@ export function AuthTextInput({
             accessibilityLabel={isSecureVisible ? 'Hide password' : 'Show password'}
             className="ml-2"
           >
-            <Text className="text-lg text-slate-500">{isSecureVisible ? '👁️' : '👁️‍🗨️'}</Text>
+            <Icon
+              name={isSecureVisible ? 'Hide Password' : 'Eye'}
+              size="small"
+              color={theme.colors.slate}
+            />
           </Pressable>
         )}
       </View>
