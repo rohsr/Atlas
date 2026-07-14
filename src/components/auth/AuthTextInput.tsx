@@ -1,13 +1,11 @@
-import { forwardRef, useState, memo } from 'react';
-import { Pressable, TextInput as RNTextInput, Text, View, StyleSheet } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { useState } from 'react';
+import { Pressable, TextInput as RNTextInput, Text, View } from 'react-native';
 
 interface AuthTextInputProps {
   label: string;
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
-  onBlur?: () => void;
   secureTextEntry?: boolean;
   error?: string;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
@@ -15,119 +13,54 @@ interface AuthTextInputProps {
   editable?: boolean;
 }
 
-export const AuthTextInput = memo(
-  forwardRef<RNTextInput, AuthTextInputProps>(
-    (
-      {
-        label,
-        placeholder,
-        value,
-        onChangeText,
-        onBlur,
-        secureTextEntry = false,
-        error,
-        autoCapitalize = 'sentences',
-        keyboardType = 'default',
-        editable = true,
-      },
-      ref
-    ) => {
-      const [isSecureVisible, setIsSecureVisible] = useState(false);
-      const [isFocused, setIsFocused] = useState(false);
+export function AuthTextInput({
+  label,
+  placeholder,
+  value,
+  onChangeText,
+  secureTextEntry = false,
+  error,
+  autoCapitalize = 'sentences',
+  keyboardType = 'default',
+  editable = true,
+}: AuthTextInputProps) {
+  const [isSecureVisible, setIsSecureVisible] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
-      return (
-        <View style={styles.container}>
-          <Text style={styles.label}>{label}</Text>
-          <View
-            style={[
-              styles.inputContainer,
-              {
-                borderColor: error ? '#EF4444' : isFocused ? '#111111' : '#ECECEC',
-              },
-            ]}
+  return (
+    <View className="gap-2">
+      <Text className="text-sm font-medium text-black">{label}</Text>
+      <View
+        className={`flex-row items-center rounded-xl border px-4 py-3 ${
+          error ? 'border-red-500' : isFocused ? 'border-black bg-slate-50' : 'border-neutral-200 bg-white'
+        }`}
+      >
+        <RNTextInput
+          placeholder={placeholder}
+          value={value}
+          onChangeText={onChangeText}
+          secureTextEntry={secureTextEntry && !isSecureVisible}
+          autoCapitalize={autoCapitalize}
+          keyboardType={keyboardType}
+          editable={editable}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholderTextColor="#94a3b8"
+          className="flex-1 text-base text-black"
+          accessibilityLabel={label}
+        />
+        {secureTextEntry && (
+          <Pressable
+            onPress={() => setIsSecureVisible(!isSecureVisible)}
+            accessibilityRole="button"
+            accessibilityLabel={isSecureVisible ? 'Hide password' : 'Show password'}
+            className="ml-2"
           >
-            <RNTextInput
-              ref={ref}
-              placeholder={placeholder}
-              value={value}
-              onChangeText={onChangeText}
-              secureTextEntry={secureTextEntry && !isSecureVisible}
-              autoCapitalize={autoCapitalize}
-              keyboardType={keyboardType}
-              editable={editable}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => {
-                setIsFocused(false);
-                onBlur?.();
-              }}
-              placeholderTextColor="#94a3b8"
-              style={styles.input}
-              accessibilityLabel={label}
-            />
-            {secureTextEntry && (
-              <Pressable
-                onPress={() => setIsSecureVisible(!isSecureVisible)}
-                accessibilityRole="button"
-                accessibilityLabel={isSecureVisible ? 'Hide password' : 'Show password'}
-                style={styles.eyeButton}
-              >
-                <Feather
-                  name={isSecureVisible ? 'eye-off' : 'eye'}
-                  size={20}
-                  color="#6B7280"
-                />
-              </Pressable>
-            )}
-          </View>
-          {error && <Text style={styles.errorText}>{error}</Text>}
-        </View>
-      );
-    }
-  )
-);
-
-AuthTextInput.displayName = 'AuthTextInput';
-
-const styles = StyleSheet.create({
-  container: {
-    gap: 8,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#111111',
-    fontFamily: 'Inter-Regular',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
-    // Soft shadow is kept static to prevent rendering/layout reflows on focus
-    shadowColor: '#111111',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: '#111111',
-    fontFamily: 'Inter-Regular',
-    padding: 0,
-  },
-  eyeButton: {
-    marginLeft: 8,
-  },
-  errorText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#EF4444',
-    fontFamily: 'Inter-Regular',
-    marginTop: 2,
-  },
-});
+            <Text className="text-lg text-slate-500">{isSecureVisible ? '👁️' : '👁️‍🗨️'}</Text>
+          </Pressable>
+        )}
+      </View>
+      {error && <Text className="text-xs font-medium text-red-500">{error}</Text>}
+    </View>
+  );
+}
