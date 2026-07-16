@@ -1,7 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Pressable, TextInput as RNTextInput, Text, View } from 'react-native';
 import { theme } from '../../theme';
 import { Icon } from '../Icon';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  withSequence,
+  withRepeat,
+  interpolateColor,
+  FadeInDown,
+} from 'react-native-reanimated';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface AuthTextInputProps {
   label: string;
@@ -28,14 +38,55 @@ export function AuthTextInput({
 }: AuthTextInputProps) {
   const [isSecureVisible, setIsSecureVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const isReduced = useReducedMotion();
+
+  const focusProgress = useSharedValue(0);
+  const shakeX = useSharedValue(0);
+
+  useEffect(() => {
+    focusProgress.value = withTiming(isFocused ? 1 : 0, { duration: 150 });
+  }, [isFocused]);
+
+  useEffect(() => {
+    if (error && !isReduced) {
+      shakeX.value = withSequence(
+        withTiming(-8, { duration: 50 }),
+        withRepeat(withTiming(8, { duration: 100 }), 3, true),
+        withTiming(0, { duration: 50 })
+      );
+    }
+  }, [error, isReduced]);
+
+  const animatedContainerStyle = useAnimatedStyle(() => {
+    const borderColor = error
+      ? '#EF4444' // red-500
+      : interpolateColor(
+          focusProgress.value,
+          [0, 1],
+          ['#ECECEC', '#111111']
+        );
+
+    const backgroundColor = error
+      ? '#FFFFFF'
+      : interpolateColor(
+          focusProgress.value,
+          [0, 1],
+          ['#FFFFFF', '#F8FAFC']
+        );
+
+    return {
+      borderColor,
+      backgroundColor,
+      transform: [{ translateX: shakeX.value }],
+    };
+  });
 
   return (
     <View className="gap-2">
       <Text className="text-sm font-medium text-black">{label}</Text>
-      <View
-        className={`flex-row items-center rounded-xl border px-4 py-3 ${
-          error ? 'border-red-500' : isFocused ? 'border-black bg-slate-50' : 'border-neutral-200 bg-white'
-        }`}
+      <Animated.View
+        style={animatedContainerStyle}
+        className="flex-row items-center rounded-xl border px-4 py-3"
       >
         <RNTextInput
           placeholder={placeholder}
@@ -65,8 +116,13 @@ export function AuthTextInput({
             />
           </Pressable>
         )}
-      </View>
-      {error && <Text className="text-xs font-medium text-red-500">{error}</Text>}
+      </Animated.View>
+      {error && (
+        <Animated.View entering={isReduced ? undefined : FadeInDown.duration(150)}>
+          <Text className="text-xs font-medium text-red-500">{error}</Text>
+        </Animated.View>
+      )}
     </View>
   );
 }
+

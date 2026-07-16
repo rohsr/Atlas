@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Icon } from '../Icon';
-import { Card, Badge, FilterPills } from '../ui';
+import { Card, Badge, FilterPills, AnimatedCard } from '../ui';
 import { MOCK_BOOKINGS } from '../../constants/mock-data';
 import { theme } from '../../theme';
 
@@ -30,7 +30,7 @@ export function TripBookings() {
 
       {/* Bookings List */}
       <View className="gap-3">
-        {filteredBookings.map((booking) => {
+        {filteredBookings.map((booking, index) => {
           let categoryIcon: any = 'Calendar';
           let iconBg = '#F1F5F9';
           if (booking.category === 'flight') {
@@ -48,7 +48,7 @@ export function TripBookings() {
           }
 
           return (
-            <Card key={booking.id} className="p-4 flex-row items-center">
+            <AnimatedCard index={index} key={booking.id} className="p-4 flex-row items-center">
               {/* Category Icon */}
               <View
                 className="h-12 w-12 rounded-xl items-center justify-center mr-4"
@@ -72,10 +72,11 @@ export function TripBookings() {
                   <Text className="text-caption text-primary font-medium">Ref: {booking.reference}</Text>
                 </View>
               </View>
-            </Card>
+            </AnimatedCard>
           );
         })}
       </View>
     </View>
   );
 }
+

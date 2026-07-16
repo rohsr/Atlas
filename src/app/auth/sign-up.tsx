@@ -8,6 +8,10 @@ import { z } from 'zod';
 
 import { AuthTextInput, VerificationModal } from '../../components/auth';
 import { Icon } from '../../components/Icon';
+import { useAuthStore } from '../../stores/auth.store';
+import { useUIStore } from '../../stores/ui.store';
+import { useHaptics } from '../../hooks/useHaptics';
+import { MOCK_USER } from '../../constants/mock-data';
 
 // Validation schema
 const signUpSchema = z
@@ -31,6 +35,9 @@ export default function SignUpScreen() {
   const [userEmail, setUserEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const signIn = useAuthStore((s) => s.signIn);
+  const showToast = useUIStore((s) => s.showToast);
+  const haptics = useHaptics();
 
   const {
     control,
@@ -66,11 +73,14 @@ export default function SignUpScreen() {
       setLoading(true);
       // Simulate verification
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Navigate to home on success
+      // Sign in and navigate to onboarding flow
+      signIn({ ...MOCK_USER, email: userEmail });
+      haptics.success();
       setVerificationVisible(false);
       router.replace('/onboarding-flow/complete-profile');
     } catch (error) {
-      console.error('Verification error:', error);
+      haptics.error();
+      showToast('Verification failed. Please try again.', 'error');
     } finally {
       setLoading(false);
     }

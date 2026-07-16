@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -7,13 +8,26 @@ import { Icon } from '../../components/Icon';
 import { Card, SectionHeader } from '../../components/ui';
 import { PARIS_DETAIL } from '../../constants/mock-data';
 import { theme } from '../../theme';
+import { useUIStore } from '../../stores/ui.store';
+import { useHaptics } from '../../hooks/useHaptics';
 
 export default function DestinationDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const showToast = useUIStore((s) => s.showToast);
+  const haptics = useHaptics();
+
+  const [isLiked, setIsLiked] = useState(false);
 
   // For mock purpose, use PARIS_DETAIL
   const dest = PARIS_DETAIL;
+
+  const handleLikeToggle = () => {
+    haptics.success();
+    const nextState = !isLiked;
+    setIsLiked(nextState);
+    showToast(nextState ? 'Saved to bucket list' : 'Removed from bucket list', 'success');
+  };
 
   return (
     <View className="flex-1 bg-surface">
@@ -32,15 +46,28 @@ export default function DestinationDetailScreen() {
           <SafeAreaView className="absolute top-0 left-0 right-0" edges={['top']}>
             <View className="flex-row items-center justify-between px-4 pt-2">
               <Pressable
-                onPress={() => router.back()}
+                onPress={() => {
+                  haptics.light();
+                  router.back();
+                }}
                 className="h-10 w-10 rounded-full bg-black/30 items-center justify-center"
                 accessibilityRole="button"
                 accessibilityLabel="Go back"
               >
                 <Icon name="ArrowLeft" size={20} color="#FFFFFF" />
               </Pressable>
-              <Pressable className="h-10 w-10 rounded-full bg-black/30 items-center justify-center">
-                <Icon name="Heart" size={18} color="#FFFFFF" />
+              <Pressable
+                onPress={handleLikeToggle}
+                className="h-10 w-10 rounded-full bg-black/30 items-center justify-center"
+                accessibilityRole="button"
+                accessibilityLabel={isLiked ? "Unlike destination" : "Like destination"}
+              >
+                <Icon
+                  name={isLiked ? "Heart" : "Heart"}
+                  size={18}
+                  color={isLiked ? "#EF4444" : "#FFFFFF"}
+                  fill={isLiked ? "#EF4444" : "none"}
+                />
               </Pressable>
             </View>
           </SafeAreaView>

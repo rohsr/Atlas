@@ -1,6 +1,7 @@
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Icon, type IconName } from '../Icon';
 import { theme } from '../../theme';
+import { ScalePress } from './Animation';
 
 interface MenuItemProps {
   icon: IconName;
@@ -26,10 +27,16 @@ export function MenuItem({
   rightElement,
   className = '',
 }: MenuItemProps) {
+  const handlePress = () => {
+    onPress?.();
+  };
+
   return (
-    <Pressable
-      onPress={onPress}
-      className={`flex-row items-center h-[52px] px-4 active:opacity-80 ${className}`}
+    <ScalePress
+      onPress={handlePress}
+      disabled={!onPress}
+      haptic={true}
+      className={`flex-row items-center h-[52px] px-4 ${className}`}
       accessibilityRole="button"
       accessibilityLabel={label}
     >
@@ -54,6 +61,7 @@ export function MenuItem({
       {showChevron && !rightElement && (
         <Icon name="ChevronRight" size="small" color={theme.colors.slate} />
       )}
-    </Pressable>
+    </ScalePress>
   );
 }
+

@@ -1,6 +1,11 @@
-import { Pressable, Text, View } from 'react-native';
+import { useEffect } from 'react';
+import { Text, View } from 'react-native';
 import { Icon, type IconName } from '../Icon';
 import { theme } from '../../theme';
+import { useHaptics } from '../../hooks/useHaptics';
+import { ScalePress } from '../ui/Animation';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface SelectionCardProps {
   icon: IconName;
@@ -24,10 +29,33 @@ export function SelectionCard({
   onPress,
   className = '',
 }: SelectionCardProps) {
+  const haptics = useHaptics();
+  const isReduced = useReducedMotion();
+  const checkScale = useSharedValue(selected ? 1 : 0.8);
+
+  useEffect(() => {
+    if (isReduced) {
+      checkScale.value = selected ? 1 : 0.8;
+      return;
+    }
+    checkScale.value = withSpring(selected ? 1 : 0.8, { damping: 12, stiffness: 200 });
+  }, [selected, isReduced]);
+
+  const animatedCheckStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: checkScale.value }],
+  }));
+
+  const handlePress = () => {
+    haptics.selection();
+    onPress();
+  };
+
   return (
-    <Pressable
-      onPress={onPress}
-      className={`flex-row items-center h-20 px-4 rounded-card border active:opacity-90 ${
+    <ScalePress
+      onPress={handlePress}
+      scaleValue={0.97}
+      haptic={false}
+      className={`flex-row items-center h-20 px-4 rounded-card border ${
         selected
           ? 'bg-blue-50/20 border-accent'
           : 'bg-white border-border'
@@ -54,13 +82,15 @@ export function SelectionCard({
       </View>
 
       {/* Checkmark circle indicator */}
-      <View
+      <Animated.View
+        style={animatedCheckStyle}
         className={`h-6 w-6 rounded-full border items-center justify-center ${
           selected ? 'border-accent bg-accent' : 'border-neutral-300 bg-white'
         }`}
       >
         {selected && <Icon name="Check" size={12} color="white" strokeWidth={3.5} />}
-      </View>
-    </Pressable>
+      </Animated.View>
+    </ScalePress>
   );
 }
+

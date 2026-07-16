@@ -8,6 +8,10 @@ import { z } from 'zod';
 
 import { AuthTextInput, SocialAuthButton, VerificationModal } from '../../components/auth';
 import { Icon } from '../../components/Icon';
+import { useAuthStore } from '../../stores/auth.store';
+import { useUIStore } from '../../stores/ui.store';
+import { useHaptics } from '../../hooks/useHaptics';
+import { MOCK_USER } from '../../constants/mock-data';
 
 // Validation schema
 const signInSchema = z.object({
@@ -23,6 +27,9 @@ export default function SignInScreen() {
   const [userEmail, setUserEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const signIn = useAuthStore((s) => s.signIn);
+  const showToast = useUIStore((s) => s.showToast);
+  const haptics = useHaptics();
 
   const {
     control,
@@ -70,11 +77,14 @@ export default function SignInScreen() {
       setLoading(true);
       // Simulate verification
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Navigate to home on success
+      // Sign in via auth store and navigate to home
+      signIn(MOCK_USER);
+      haptics.success();
       setVerificationVisible(false);
       router.replace('/(tabs)');
     } catch (error) {
-      console.error('Verification error:', error);
+      haptics.error();
+      showToast('Verification failed. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -150,7 +160,10 @@ export default function SignInScreen() {
 
               {/* Forgot Password */}
               <Pressable
-                onPress={() => console.log('Forgot password')}
+                onPress={() => {
+                  haptics.light();
+                  showToast('Password reset coming soon', 'info');
+                }}
                 accessibilityRole="button"
                 accessibilityLabel="Forgot password"
               >

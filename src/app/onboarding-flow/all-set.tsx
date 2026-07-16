@@ -5,6 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/ui';
 import { theme } from '../../theme';
+import { useAuthStore } from '../../stores/auth.store';
+import { useHaptics } from '../../hooks/useHaptics';
 
 const CHECKLIST = [
   'Personalized recommendations',
@@ -15,8 +17,12 @@ const CHECKLIST = [
 
 export default function OnboardingCompleteScreen() {
   const router = useRouter();
+  const completeOnboarding = useAuthStore((s) => s.completeOnboarding);
+  const haptics = useHaptics();
 
   const handleStart = () => {
+    haptics.success();
+    completeOnboarding();
     // Navigate to tabs/home
     router.replace('/(tabs)');
   };

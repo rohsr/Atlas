@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 
 import { Icon, type IconName } from '../Icon';
-import { Card } from '../ui';
+import { Card, AnimatedCard } from '../ui';
 import { MOCK_OVERVIEW } from '../../constants/mock-data';
 import { theme } from '../../theme';
 
@@ -20,11 +20,11 @@ const TYPE_CONFIG: Record<string, { icon: IconName; tint: string }> = {
 export function TripOverview() {
   return (
     <View className="gap-3">
-      {MOCK_OVERVIEW.map((section) => {
+      {MOCK_OVERVIEW.map((section, index) => {
         const config = TYPE_CONFIG[section.type] ?? { icon: 'Info', tint: '#F1F5F9' };
 
         return (
-          <Card key={section.id} className="p-4">
+          <AnimatedCard index={index} key={section.id} className="p-4">
             <View className="flex-row items-center mb-3">
               <View
                 className="h-10 w-10 rounded-md items-center justify-center mr-3"
@@ -44,9 +44,10 @@ export function TripOverview() {
                 {detail}
               </Text>
             ))}
-          </Card>
+          </AnimatedCard>
         );
       })}
     </View>
   );
 }
+

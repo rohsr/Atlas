@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, Text } from 'react-native';
+import { ScrollView, Text } from 'react-native';
+import { ScalePress } from './Animation';
 
 interface FilterPillsProps {
   options: string[];
@@ -27,9 +28,11 @@ export function FilterPills({
       {options.map((option) => {
         const isActive = option === selected;
         return (
-          <Pressable
+          <ScalePress
             key={option}
             onPress={() => onSelect(option)}
+            scaleValue={0.94}
+            haptic={true}
             className={`h-9 items-center justify-center rounded-button px-4 ${
               isActive
                 ? 'bg-primary'
@@ -45,9 +48,10 @@ export function FilterPills({
             >
               {option}
             </Text>
-          </Pressable>
+          </ScalePress>
         );
       })}
     </ScrollView>
   );
 }
+

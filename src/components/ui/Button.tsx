@@ -1,5 +1,6 @@
-import { ActivityIndicator, Pressable, Text } from 'react-native';
+import { ActivityIndicator, Text } from 'react-native';
 import { Icon, type IconName } from '../Icon';
+import { ScalePress } from './Animation';
 
 type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'text';
 
@@ -36,12 +37,17 @@ export function Button({
   const style = VARIANT_STYLES[variant];
   const isDisabled = disabled || loading;
 
+  const handlePress = () => {
+    onPress?.();
+  };
+
   return (
-    <Pressable
-      onPress={onPress}
+    <ScalePress
+      onPress={handlePress}
       disabled={isDisabled}
+      haptic={true}
       className={`h-14 flex-row items-center justify-center rounded-button gap-2 ${style.bg} ${
-        isDisabled ? 'opacity-50' : 'active:opacity-80'
+        isDisabled ? 'opacity-50' : ''
       } ${className}`}
       accessibilityRole="button"
       accessibilityLabel={title}
@@ -54,6 +60,7 @@ export function Button({
           <Text className={`text-body1 font-display ${style.text}`}>{title}</Text>
         </>
       )}
-    </Pressable>
+    </ScalePress>
   );
 }
+

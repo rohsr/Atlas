@@ -1,14 +1,18 @@
 import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Icon } from '../Icon';
-import { Card, Button, FilterPills } from '../ui';
+import { Card, Button, FilterPills, AnimatedCard, ScalePress } from '../ui';
 import { MOCK_DOCUMENTS } from '../../constants/mock-data';
 import { theme } from '../../theme';
+import { useUIStore } from '../../stores/ui.store';
+import { useHaptics } from '../../hooks/useHaptics';
 
 const CATEGORIES = ['All', 'Passports', 'Visas', 'Insurance', 'Tickets'];
 
 export function TripDocuments() {
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const showToast = useUIStore((s) => s.showToast);
+  const haptics = useHaptics();
 
   const filteredDocs = MOCK_DOCUMENTS.filter((doc) => {
     if (selectedCategory === 'All') return true;
@@ -18,6 +22,16 @@ export function TripDocuments() {
     if (selectedCategory === 'Tickets') return doc.category === 'ticket';
     return true;
   });
+
+  const handleDownload = (docTitle: string) => {
+    haptics.success();
+    showToast(`Downloading "${docTitle}"...`, 'success');
+  };
+
+  const handleAddDocument = () => {
+    haptics.light();
+    showToast('Document upload coming soon', 'info');
+  };
 
   return (
     <View className="gap-4">
@@ -30,7 +44,7 @@ export function TripDocuments() {
 
       {/* Documents List */}
       <View className="gap-3">
-        {filteredDocs.map((doc) => {
+        {filteredDocs.map((doc, index) => {
           let docIcon: any = 'FileText';
           let iconBg = '#F1F5F9';
           if (doc.category === 'passport') {
@@ -48,7 +62,7 @@ export function TripDocuments() {
           }
 
           return (
-            <Card key={doc.id} className="p-4 flex-row items-center">
+            <AnimatedCard index={index} key={doc.id} className="p-4 flex-row items-center">
               <View
                 className="h-12 w-12 rounded-xl items-center justify-center mr-4"
                 style={{ backgroundColor: iconBg }}
@@ -71,10 +85,17 @@ export function TripDocuments() {
                   </Text>
                 )}
               </View>
-              <Pressable className="h-10 w-10 items-center justify-center">
+              <ScalePress
+                onPress={() => handleDownload(doc.title)}
+                scaleValue={0.9}
+                haptic={false}
+                className="h-10 w-10 items-center justify-center"
+                accessibilityRole="button"
+                accessibilityLabel={`Download ${doc.title}`}
+              >
                 <Icon name="ArrowDownToLine" size={18} color={theme.colors.slate} />
-              </Pressable>
-            </Card>
+              </ScalePress>
+            </AnimatedCard>
           );
         })}
       </View>
@@ -84,9 +105,10 @@ export function TripDocuments() {
         title="Add Document"
         icon="Plus"
         variant="secondary"
-        onPress={() => {}}
+        onPress={handleAddDocument}
         className="mt-2"
       />
     </View>
   );
 }
+
